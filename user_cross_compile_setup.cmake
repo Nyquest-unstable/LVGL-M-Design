@@ -11,5 +11,5 @@ set(CMAKE_CXX_COMPILER ${tools}/bin/arm-buildroot-linux-gnueabihf-g++)
 
 # If necessary, set STAGING_DIR
 # if not work, please try(in shell command): export STAGING_DIR=/home/ubuntu/100ask/T113s4_Lvgl9-Class_TinaSDK-V1/out/t113_s4/100ask_lvgl9/openwrt/staging_dir/target
-set(ENV{STAGING_DIR} "/home/ubuntu/100ask/T113s4_Lvgl9-Class_TinaSDK-V1/out/t113_s4/100ask_lvgl9/openwrt/staging_dir/target")
+# set(ENV{STAGING_DIR} "/home/ubuntu/100ask/T113s4_Lvgl9-Class_TinaSDK-V1/out/t113_s4/100ask_lvgl9/openwrt/staging_dir/target")
 
