@@ -18,8 +18,10 @@ bool maximize;
 
 static void configure_simulator(int argc, char **argv);
 
+// 静态常量字符指针函数，用于获取环境变量
 static const char *getenv_default(const char *name, const char *dflt)
 {
+    // 如果环境变量存在，则返回环境变量的值，否则返回默认值
     return getenv(name) ? : dflt;
 }
 
@@ -30,7 +32,8 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
      * Use 'evtest' to find the correct input device. /dev/input/by-id/ is recommended if possible
      * Use /dev/input/by-id/my-mouse-or-touchscreen or /dev/input/eventX
      */
-    const char *input_device = getenv("LV_LINUX_EVDEV_POINTER_DEVICE");
+    // const char *input_device = getenv("LV_LINUX_EVDEV_POINTER_DEVICE");
+    const char *input_device = getenv_default("LV_LINUX_EVDEV_POINTER_DEVICE", "/dev/input/event0");
 
     if (input_device == NULL) {
         fprintf(stderr, "please set the LV_LINUX_EVDEV_POINTER_DEVICE environment variable\n");
@@ -49,16 +52,24 @@ static void lv_linux_init_input_pointer(lv_display_t *disp)
 #endif
 
 #if LV_USE_LINUX_FBDEV
+// 静态函数，用于初始化Linux显示设备
 static void lv_linux_disp_init(void)
 {
+    // 获取环境变量LV_LINUX_FBDEV_DEVICE的值，默认为"/dev/fb1"
+    LV_LOG_USER("getenv_default");
     const char *device = getenv_default("LV_LINUX_FBDEV_DEVICE", "/dev/fb1");
+    // 创建Linux帧缓冲设备
+    LV_LOG_USER("lv_linux_fbdev_create");
     lv_display_t * disp = lv_linux_fbdev_create();
 
 #if LV_USE_EVDEV
+    // 初始化Linux输入设备
     lv_linux_init_input_pointer(disp);
 #endif
-
+    // 设置Linux帧缓冲设备的文件
+    LV_LOG_USER("lv_linux_fbdev_set_file");
     lv_linux_fbdev_set_file(disp, device);
+    LV_LOG_USER("end lv_linux_fbdev_set_file");
 }
 #elif LV_USE_LINUX_DRM
 static void lv_linux_disp_init(void)
@@ -156,13 +167,15 @@ int main(int argc, char **argv)
     lv_init();
 
     /* Initialize the configured backend SDL2, FBDEV, libDRM or wayland */
+    LV_LOG_USER("lv_linux_disp_init");
     lv_linux_disp_init();
 
     /*Create a Demo*/
     LV_LOG_USER("Demo started");
-    // lv_demo_widgets();
-    // lv_demo_widgets_start_slideshow();
+    // LV_LOG("getenv: %s\n", getenv("USER"));
+    lv_demo_widgets();
 
+    LV_LOG_USER("lv_linux_run_loop");
     lv_linux_run_loop();
 
     return 0;
